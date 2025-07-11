@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>G PRA News</title>
+  <style>
+    Body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+    }
+
+    header {
+      background-color: #333;
+      color: white;
+      padding: 10px 0;
+      text-align: center;
+    }
+    .company-logo img {
+            width: 120px;
+            display: flex;
+            flex-wrap: wrap
+
+    }
+
+
+    nav {
+      display: flex;
+      justify-content: center;
+      background-color: #444;
+    flex-wrap: wrap;
+    }
+
+    nav button {
+      background-color: transparent;
+      border: none;
+      color: white;
+      padding: 15px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    nav button:hover {
+      background-color: #666;
+    }
+
+    main {
+      padding: 20px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 20px;
+    }
+
+    .news-card {
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .news-card img {
+      width: 100%;
+      height: 180px;
+      object-fit: cover;
+    }
+
+    .news-card-content {
+      padding: 15px;
+    }
+
+    .news-card-content h3 {
+      margin-top: 0;
+      font-size: 1.2em;
+    }
+
+    .news-card-content p {
+      font-size: 0.9em;
+      color: #333;
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+        <div class="main-nav container flex">
+        <a href="#" class="company-logo">
+                <img src="IMAGE/LOGO PNG.png" alt="LOGO">
+
+        </a>
+    </div>
+
+    <h1>G PRA NEWS</h1>
+  </header>
+
+  <nav>
+
+    <button onclick="getNews('ipl')">IPL</button>
+    <button onclick="getNews('politics')">Politics</button>
+    <button onclick="getNews('finance')">Finance</button>
+    <button onclick="getNews('games')">Games</button>
+    <button onclick="getNews('movies')">Movies</button>
+    <button onclick="getNews('etc')">Etc</button>
+  </nav>
+
+  <main id="news-container">
+    <!-- News articles will be displayed here -->
+  </main>
+
+  <script>
+    const apiKey = '4d5272a10cf94a56a288df9fd701bc82';
+  
+
+    async function getNews(category) {
+      const container = document.getElementById('news-container');
+      container.innerHTML = '<p>Loading...</p>';
+
+      try {
+        const response = await fetch(`https://newsapi.org/v2/everything?q=${category}&apiKey=${apiKey}`);
+        const data = await response.json();
+        if (data.articles) {
+          displayNews(data.articles);
+        } else {
+          container.innerHTML = '<p>No news found.</p>';
+        }
+      } catch (error) {
+        container.innerHTML = `<p>Error loading news: ${error.message}</p>`;
+      }
+    }
+
+    function displayNews(articles) {
+      const container = document.getElementById('news-container');
+      container.innerHTML = articles.map(article => `
+        <div class="news-card">
+          <img src="${article.urlToImage || 'https://via.placeholder.com/300x180'}" alt="News image">
+          <div class="news-card-content">
+            <h3>${article.title}</h3>
+            <p>${article.description || 'No description available.'}</p>
+            <a href="${article.url}" target="_blank">Read more</a>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // Load default category on page load
+    window.onload = () => getNews('ipl');
+  </script>
+</body>
+
+</html>
